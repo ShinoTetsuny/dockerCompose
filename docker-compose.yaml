@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - app-network
+      - private
 
   pgadmin:
     image: dpage/pgadmin4
@@ -23,8 +23,6 @@ services:
       - ./docker/pgadmin_servers.json:/pgadmin4/servers.json
     depends_on:
       - db
-    networks:
-      - app-network
 
   backend:
     build:
@@ -36,7 +34,9 @@ services:
     depends_on:
       - pgadmin
     networks:
-      - app-network
+      - public
+      - private
+    hostname: backend
 
   frontend:
     build:
@@ -48,11 +48,13 @@ services:
     depends_on:
       - backend
     networks:
-      - app-network
+      - public
+    hostname: frontend
+
+networks:
+  public:
+  private:
 
 volumes:
   postgres_data:
   pgadmin_data:
-
-networks:
-  app-network:

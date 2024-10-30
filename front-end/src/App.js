@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
   const [message, setMessage] = useState('');
@@ -9,13 +10,17 @@ function App() {
   useEffect(() => {
     const checkServer = async () => {
       try {
-        const response = await fetch(`${process.env.BACKEND_URL || 'http://backend:3000'}/`);
-        if (response.ok) {
-          const data = await response.text();
-          setMessage(data);
-        } else {
-          setMessage('Erreur de connexion au serveur');
-        }
+        const response = await axios.get(`http://backend:3000/`);
+        setMessage(response.data);
+      } catch (error) {
+        setMessage('Erreur : ' + error.message);
+      }
+    };
+
+    const fetchApiData = async () => {
+      try {
+        const response = await axios.get('/api/');
+        setMessage(response.data);
       } catch (error) {
         setMessage('Erreur : ' + error.message);
       }
@@ -23,36 +28,29 @@ function App() {
 
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${process.env.BACKEND_URL || 'http://app-network:3000'}/users`);
-        const data = await response.json();
-        setUsers(data);
+        const response = await axios.get(`${process.env.BACKEND_URL || 'http://app-network:3000'}/users`);
+        setUsers(response.data);
       } catch (error) {
         console.error('Erreur : ' + error.message);
       }
     };
 
+    fetchApiData();
     checkServer();
-    fetchUsers();
+    //fetchUsers();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${process.env.BACKEND_URL || 'http://app-network:3000'}/users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email }),
+      const response = await axios.post(`${process.env.BACKEND_URL || 'http://app-network:3000'}/users`, {
+        name,
+        email,
       });
-      if (response.ok) {
-        const newUser = await response.json();
-        setUsers([...users, newUser]);
-        setName('');
-        setEmail('');
-      } else {
-        console.error('Erreur lors de la création de l\'utilisateur');
-      }
+      const newUser = response.data;
+      setUsers([...users, newUser]);
+      setName('');
+      setEmail('');
     } catch (error) {
       console.error('Erreur : ' + error.message);
     }
