@@ -10,8 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - db-network
-      - admin-network
+      - app-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -25,7 +24,7 @@ services:
     depends_on:
       - db
     networks:
-      - admin-network
+      - app-network
 
   backend:
     build:
@@ -38,7 +37,6 @@ services:
       - pgadmin
     networks:
       - app-network
-      - db-network
 
   frontend:
     build:
@@ -57,9 +55,4 @@ volumes:
   pgadmin_data:
 
 networks:
-  db-network:
-    driver: bridge
   app-network:
-    driver: bridge
-  admin-network:
-    driver: bridge

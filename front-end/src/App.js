@@ -23,7 +23,7 @@ function App() {
 
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${process.env.BACKEND_URL || 'http://backend:3000'}/users`);
+        const response = await fetch(`${process.env.BACKEND_URL || 'http://app-network:3000'}/users`);
         const data = await response.json();
         setUsers(data);
       } catch (error) {
@@ -38,7 +38,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${process.env.BACKEND_URL || 'http://backend:3000'}/users`, {
+      const response = await fetch(`${process.env.BACKEND_URL || 'http://app-network:3000'}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
