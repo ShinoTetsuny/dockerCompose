@@ -23,6 +23,8 @@ services:
       - ./docker/pgadmin_servers.json:/pgadmin4/servers.json
     depends_on:
       - db
+    networks:
+      - private
 
   backend:
     build:
